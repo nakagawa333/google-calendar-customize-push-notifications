@@ -1,0 +1,2 @@
+# google-calendar-customize-push-notifications
+googleカレンダーのプッシュ通知のリマインドなどカスタマイズする
