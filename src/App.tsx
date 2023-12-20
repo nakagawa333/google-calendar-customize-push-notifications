@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import './App.css';
 import Box from '@mui/material/Box';
 import { AppBar, Container, List, ListItem, ListItemText, Toolbar, Typography } from '@mui/material';
-import { getRequestToken, onMessageEvent } from './firebase';
-import {  onMessage } from "firebase/messaging";
+import { getRequestToken,onMessageListener } from './firebase';
+import "./firebase";
+import { requestNotificationPermission,showNotification } from './Notification/notification';
 
 function App() {
   const todos:string[] = ["todo1","todo2","todo3"];
@@ -13,12 +14,36 @@ function App() {
       //トークン取得    
       let token = await getRequestToken();
       console.info(token);
+
+      if("Notification" in window){
+        const permission = Notification.permission;
+        if(permission === "denied" || permission === "granted"){
+          return;
+        }
+  
+        try{
+          await requestNotificationPermission();
+        } catch(e){
+          console.error(e);
+        }
+      }
     })()
   },[])
 
-  onMessageEvent().then(payload => {
-    console.log(payload);
-  }).catch(err => console.log('failed: ', err));
+  onMessageListener()
+   .then(async(payload:any) => {
+      //通知を作成
+      let notification = new Notification(
+        payload.notification.title,
+        {
+          body:payload.notification.body,
+          tag:"",
+          data:payload.data
+        }
+      );
+
+      await showNotification(notification);
+   })
 
   return (
 

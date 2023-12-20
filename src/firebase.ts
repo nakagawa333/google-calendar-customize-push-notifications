@@ -37,10 +37,9 @@ export const getRequestToken = async():Promise<string> => {
     return "";
 }
 
-export const onMessageEvent = () => {
-    return new Promise((resolve) => {
-        onMessage(messaging,(payload) => {
-            resolve(payload);
-        })
-    })
-}
+export const onMessageListener = () =>
+  new Promise((resolve) => {
+    onMessage(messaging, (payload) => {
+      resolve(payload);
+    });
+})
