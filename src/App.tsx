@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import './App.css';
 import Box from '@mui/material/Box';
 import { AppBar, Container, List, ListItem, ListItemText, Toolbar, Typography } from '@mui/material';
-import { getRequestToken,onMessageListener } from './firebase';
-import { requestNotificationPermission,showNotification } from './Notification/notification';
 import FcmNotification from './components/FcmNotification';
 
 function App() {
