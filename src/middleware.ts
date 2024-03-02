@@ -6,6 +6,9 @@ export function middleware(request:NextRequest){
     let cookies = request.cookies;
 
     const response = NextResponse.next();
+
+    response.cookies.set("acessToken","アクセストークン");
+    response.cookies.set("refreshToken","リフレッシュトークン");
     return response;
 }
 
