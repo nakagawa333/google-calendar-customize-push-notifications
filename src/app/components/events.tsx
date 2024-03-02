@@ -3,7 +3,7 @@ import { DOMAttributes, DetailedHTMLProps, DragEventHandler, HTMLAttributes, Ref
 import { EventModal } from "./EventModal";
 import { ScrollObserver } from "./ScrollObserver";
 import { indexedDBLocalPersistence } from "firebase/auth";
-import { userAuth } from "../common/client/client/userAuth";
+import { userAuth } from "../common/client/userAuth";
 
 type Props = {
 
