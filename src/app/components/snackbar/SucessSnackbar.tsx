@@ -1,0 +1,59 @@
+import { useEffect } from "react"
+
+type Props = {
+    id:string
+    time:number, //時間
+    msg:string //メッセージ
+    isOpen:boolean //表示状態
+    index:number
+    snackbars:any
+    setSnackbars:any
+}
+
+export const SucessSnackbar = (props:Props) => {
+    const topRem:number = 2 + props.index * 4;
+    useEffect(() => {
+        let timeoutID:any;
+        if(props.isOpen){
+            //指定時間以降に削除
+            timeoutID = setTimeout(() => {
+                onChange();
+            },props.time);
+        }
+
+        return () => clearTimeout(timeoutID);
+    },[props.snackbars])
+
+    const onChange = () => {
+        let copySnackbars = props.snackbars.filter((snackbar:any) => {
+            return snackbar.id !== props.id;
+        })
+
+        props.setSnackbars(copySnackbars);
+    }
+    return(
+        props.isOpen ? (
+            <div className="fixed top-8 left-1/2 mb-4 mr-4 p-4 bg-lime-300 text-white rounded shadow-lg" 
+                style={{transform: "translate(-50%, -50%)",top:`${topRem}rem`}}>
+                <div className="flex items-center">
+                    <div className="mr-2">
+                        <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                        </svg>
+                    </div>
+                    <div className="mr-10">
+                        {props.msg}
+                    </div>
+                    <div onClick={() => onChange()}>
+                    {/* <div> */}
+                        <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18 18 6m0 12L6 6"/>
+                        </svg>  
+                    </div>
+                </div>
+            </div>
+        ) : (
+            <></>
+        )
+    )
+}
