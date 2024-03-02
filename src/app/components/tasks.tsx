@@ -3,7 +3,7 @@ import { indexing_v3 } from "googleapis";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollObserver } from "./ScrollObserver";
 import { TaskModal } from "./TaskModal";
-import { userAuth } from "../common/client/client/userAuth";
+import { userAuth } from "../common/client/userAuth";
 
 type Props = {
 
