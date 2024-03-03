@@ -7,7 +7,7 @@ export const ApiRequest = async(apiCall:Promise<AxiosResponse<any, any>>) => {
     } catch(error:any){
         console.error(error);
         //匿名認証
-        await axios.post("/anonymous/auth")
+        await axios.post("api/anonymous/auth")
         //再APIコール
         res = await apiCall;
     }

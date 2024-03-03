@@ -9,6 +9,10 @@ import axios from "axios";
 
 
 export async function middleware(request:NextRequest){
+    let url = new URL(request.url);
+    if(url.pathname === "/api/anonymous/auth"){
+        return NextResponse.next();
+    }
     let cookies = request.cookies;
 
     let accessToken:string | undefined = cookies.get("accessToken")?.value;
