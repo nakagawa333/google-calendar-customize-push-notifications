@@ -1,15 +1,26 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-export const ApiRequest = async(apiCall:Promise<AxiosResponse<any, any>>) => {
+type reqFunction = (
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ) => Promise<any>;
+
+export const ApiRequest = async(apiCall:reqFunction,path:string,req:any) => {
+    //uidを共通リクエストとする
+    let uid = localStorage.getItem("uid");
+    req["uid"] = uid;
     let res;
     try{
-        res = await apiCall;
+        res = await apiCall.call(null,path,req);
     } catch(error:any){
         console.error(error);
         //匿名認証
-        await axios.post("api/anonymous/auth")
+        let anonymousAuthRes = await axios.post("/api/anonymous/auth")
+        let resUid:string = anonymousAuthRes.data.id;
+        localStorage.setItem("uid",resUid);
         //再APIコール
-        res = await apiCall;
+        res = await await apiCall.call(null,path,req);
     }
     return res;
 }

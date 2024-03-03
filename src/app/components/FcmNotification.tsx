@@ -34,8 +34,7 @@ function FcmNotification(){
       }
 
       try{
-        let apiFunc = axios.patch("/api/deviceToken",req);
-        let res = await ApiRequest(apiFunc);
+        let res = await ApiRequest(axios.patch,"/api/deviceToken",req);
         console.info(res);
       } catch(error:any){
         console.error(error);

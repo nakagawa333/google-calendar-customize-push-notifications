@@ -41,7 +41,7 @@ export async function POST(request: NextRequest){
         secure: true,
         path:"/"
     });
-    response.cookies.set('acessToken', tokens.refreshToken,{
+    response.cookies.set('accessToken', tokens.refreshToken,{
         httpOnly: true,
         secure: true,
         path:"/"      
