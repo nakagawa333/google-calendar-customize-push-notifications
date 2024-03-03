@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
 import { getFirebaseConfig } from "../common/server/getFirebaseConfig";
 import { Messaging, getMessaging } from "firebase/messaging";
+import { ApiRequest } from "../utils/apiRequest";
 
 const firebaseConfig = getFirebaseConfig();
 
@@ -31,7 +32,14 @@ function FcmNotification(){
         deviceToken:token,
         collectionName:"deviceToken"
       }
-      let res = await axios.patch("/api/deviceToken",req);
+
+      try{
+        let apiFunc = axios.patch("/api/deviceToken",req);
+        let res = await ApiRequest(apiFunc);
+        console.info(res);
+      } catch(error:any){
+        console.error(error);
+      }
 
       onMessageListener(messaging)
       .then(async(payload:any) => {
