@@ -17,8 +17,9 @@ export const ApiRequest = async(apiCall:reqFunction,path:string,req:any) => {
         console.error(error);
         //匿名認証
         let anonymousAuthRes = await axios.post("/api/anonymous/auth")
-        let resUid:string = anonymousAuthRes.data.id;
+        let resUid:string = anonymousAuthRes.data.uid;
         localStorage.setItem("uid",resUid);
+        req["uid"] = uid;
         //再APIコール
         res = await await apiCall.call(null,path,req);
     }

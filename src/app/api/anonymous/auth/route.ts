@@ -36,12 +36,12 @@ export async function POST(request: NextRequest){
     const response = NextResponse.json(body,{
         status:200
     });
-    response.cookies.set("refreshToken",tokens.accessToken,{
+    response.cookies.set("accessToken",tokens.accessToken,{
         httpOnly: true,
         secure: true,
         path:"/"
     });
-    response.cookies.set('accessToken', tokens.refreshToken,{
+    response.cookies.set('refreshToken', tokens.refreshToken,{
         httpOnly: true,
         secure: true,
         path:"/"      
