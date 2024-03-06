@@ -38,7 +38,6 @@ export async function middleware(request:NextRequest){
         return NextResponse.error();
     }
     let response = NextResponse.next();
-    let errorResponse = NextResponse.error();
 
     //TODO middlewareでは、firebaseの認証、axiosは使えないためfetchを使用
     let cookie = `accessToken=${accessToken}; refreshToken=${refreshToken}`;
@@ -71,9 +70,9 @@ export async function middleware(request:NextRequest){
             return response;
         }
 
-        return errorResponse;
+        return NextResponse.error();
     } catch(error:any){
-        return errorResponse;
+        return NextResponse.error();
     }
     return response;
 }
