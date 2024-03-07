@@ -19,10 +19,12 @@ export async function middleware(request:NextRequest){
         return NextResponse.next();
     }
 
-    let json = await request.json();
-    let uid = json.uid;
+    let uid = request.headers.get("Authorization");;
     if(!uid){
-        return NextResponse.error();
+        return Response.json(
+            { success: false, message: 'uidが存在しません' },
+            { status: 401 }
+        )
     }
 
     let cookies = request.cookies;
@@ -31,11 +33,17 @@ export async function middleware(request:NextRequest){
     let refreshToken:string | undefined = cookies.get("refreshToken")?.value;
 
     if(!accessToken){
-        return NextResponse.error();
+        return Response.json(
+            { success: false, message: 'アクセストークンが存在しません' },
+            { status: 401 }
+        )
     }
 
     if(!refreshToken){
-        return NextResponse.error();
+        return Response.json(
+            { success: false, message: 'リフレッシュトークンが存在しません' },
+            { status: 401 }
+        )
     }
     let response = NextResponse.next();
 
@@ -53,7 +61,7 @@ export async function middleware(request:NextRequest){
         let checkRes = await fetch(`${url.origin}/api/anonymous/check`,options);
         let status = checkRes.status;
 
-        let json = await response.json();
+        let json = await checkRes.json();
 
         if(status === 200){
             return response;
@@ -70,9 +78,15 @@ export async function middleware(request:NextRequest){
             return response;
         }
 
-        return NextResponse.error();
+        return Response.json(
+            { success: false, message: '認証エラー' },
+            { status: 401 }
+        )
     } catch(error:any){
-        return NextResponse.error();
+        return Response.json(
+            { success: false, message: '認証エラー' },
+            { status: 401 }
+        )
     }
     return response;
 }

@@ -6,22 +6,40 @@ type reqFunction = (
     config?: AxiosRequestConfig
   ) => Promise<any>;
 
-export const ApiRequest = async(apiCall:reqFunction,path:string,req:any) => {
+export const ApiRequest = async(apiCall:reqFunction,path:string,data:any) => {
     //uidを共通リクエストとする
     let uid = localStorage.getItem("uid");
-    req["uid"] = uid;
+    let config:AxiosRequestConfig = createAuthAxiosRequestConfig(uid);
     let res;
+
     try{
-        res = await apiCall.call(null,path,req);
+        res = await apiCall.call(null,path,data,config);
     } catch(error:any){
         console.error(error);
         //匿名認証
         let anonymousAuthRes = await axios.post("/api/anonymous/auth")
         let resUid:string = anonymousAuthRes.data.uid;
         localStorage.setItem("uid",resUid);
-        req["uid"] = uid;
+        config = createAuthAxiosRequestConfig(resUid);
         //再APIコール
-        res = await await apiCall.call(null,path,req);
+        res = await apiCall.call(null,path,data,config);
     }
     return res;
+}
+
+/**
+ * 認証用リクエスト設定
+ * @param data 
+ * @param uid ユーザーID
+ */
+const createAuthAxiosRequestConfig = (uid:any) => {
+    let config:AxiosRequestConfig = {
+    }
+
+    let headers = {
+        "Authorization":uid
+    }
+
+    config["headers"] = headers;
+    return config;
 }
