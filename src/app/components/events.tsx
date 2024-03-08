@@ -3,7 +3,7 @@ import { DOMAttributes, DetailedHTMLProps, DragEventHandler, HTMLAttributes, Ref
 import { EventModal } from "./EventModal";
 import { ScrollObserver } from "./ScrollObserver";
 import { indexedDBLocalPersistence } from "firebase/auth";
-import { userAuth } from "../common/client/userAuth";
+import { ApiGetRequest, ApiRequest } from "../utils/apiRequest";
 
 type Props = {
 
@@ -20,8 +20,6 @@ export const Events = (props:Props) => {
      * Googleイベント一覧を取得する
      */
     const getNextGoogleEvents = useCallback(async() => {
-        //ユーザー認証
-        await userAuth();
         
         let timeMin:string = new Date().toISOString();
         const nextPageToken = nextPageTokenRef.current;
@@ -31,22 +29,22 @@ export const Events = (props:Props) => {
             urlSearchParams.set("nextPageToken",nextPageToken);
         }
         urlSearchParams.set("timeMin",timeMin);
-        
-        let uid = localStorage.getItem("uid");
-        const config:AxiosRequestConfig = {
-          headers:{
-            "Authorization":uid
-          }
-        }
-        const res = await axios.get(`/api/getGoogleEvents?${urlSearchParams}`,config);
-        const data = res.data;
 
+        let data;
+        try{
+            let res = await ApiGetRequest(axios.get,`/api/googleEvents?${urlSearchParams}`);
+            data = res.data;
+        } catch(error:any){
+            console.error(error);
+        }
+        
         setEvents([...events,...data.events])
 
         if(!data.nextPageToken){
             return setIsActiveObserver(false);
         }
-        
+
+        console.info(data);
         nextPageTokenRef.current = data.nextPageToken;
     },[events]);
 

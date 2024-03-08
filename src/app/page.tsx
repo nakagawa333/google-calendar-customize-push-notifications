@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react'
 import FcmNotification from './components/FcmNotification';
+import { Events } from './components/events';
 
 
 export default function Home() {
@@ -64,6 +65,7 @@ export default function Home() {
           </button>
         </div>
       </div>
+      <Events />
       
       <FcmNotification />
     </div>
