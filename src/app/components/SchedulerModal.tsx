@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { SucessSnackbar } from "./snackbar/SucessSnackbar";
 import { useMatchMedia } from "../common/useMatchMedia";
-import { userAuth } from "../common/client/userAuth";
+import { ApiGetRequest, ApiRequest } from "../utils/apiRequest";
 
 type Props = {
     isOpen:boolean
@@ -90,20 +90,12 @@ export const SchedulerModal = (props:Props) => {
      * クラウドスケジュールを取得する
      */
     const getCloudSchedule = async() => {
-        let uid:string | null = localStorage.getItem("uid");
-        //ユーザー認証
-        await userAuth();
         try{
-            const config:AxiosRequestConfig = {
-                headers:{
-                  "Authorization":uid
-                }
-            }
-            const res = await axios.get("/api/cloudScheduler",config);
-            const data = res.data;
-            let dataSchedule = data.schedule;
-            if(Array.from(dataSchedule) && dataSchedule.length !== 0){
-                let dataScheduleArr = dataSchedule.split(" ");
+            const res = await ApiGetRequest(axios.get,"/api/cloudScheduler")
+            const data:any = res.data;
+            let dataSchedule:any = data.schedule;
+            if(0 < dataSchedule.length){
+                let dataScheduleArr:any = dataSchedule.split(" ");
                 let cron = {
                     min:dataScheduleArr[0],
                     time:dataScheduleArr[1],
@@ -115,7 +107,7 @@ export const SchedulerModal = (props:Props) => {
                 setCron(cron);
             }
             let parsers = data.parsers;
-            if(Array.from(parsers) && parsers.length !== 0){
+            if(Array.isArray(parsers) && parsers.length !== 0){
                 setParsers(parsers);
             }
 
@@ -129,23 +121,16 @@ export const SchedulerModal = (props:Props) => {
      * スケジュール変更
      */
     const changeSchedule = async() => {
-        let uid:string | null = localStorage.getItem("uid");
-        //ユーザー認証
-        await userAuth();
         try{
-            const config:AxiosRequestConfig = {
-                headers:{
-                  "Authorization":uid
-                }
-            }
             let reqBody = {
                 schedule:schedule
             };
-            const res = await axios.patch("/api/cloudScheduler",reqBody,config);
+
+            const res = await ApiRequest(axios.patch,"/api/cloudScheduler",reqBody);
             const data = res.data;
 
             let parsers = data.parsers;
-            if(Array.from(parsers) && parsers.length !== 0){
+            if(Array.isArray(parsers) && 0 < parsers.length){
                 setParsers(parsers);
             }
 

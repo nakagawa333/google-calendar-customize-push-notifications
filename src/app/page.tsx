@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import FcmNotification from './components/FcmNotification';
 import { Events } from './components/events';
 import { Tasks } from './components/tasks';
+import { SchedulerModal } from './components/SchedulerModal';
 
 
 export default function Home() {
@@ -77,6 +78,11 @@ export default function Home() {
         }
       
       <FcmNotification />
+      <SchedulerModal 
+        isOpen={isOpen}
+        oepnTaskModal={openSchedulerModal}
+        closeTaskModal={closeSchedulerModal}
+      />
     </div>
   )
 
