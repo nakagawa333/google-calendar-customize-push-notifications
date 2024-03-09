@@ -3,7 +3,7 @@ import { indexing_v3 } from "googleapis";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollObserver } from "./ScrollObserver";
 import { TaskModal } from "./TaskModal";
-import { userAuth } from "../common/client/userAuth";
+import { ApiGetRequest } from "../utils/apiRequest";
 
 type Props = {
 
@@ -28,20 +28,17 @@ export const Tasks = (props:Props) => {
 
 
     const getTaskLists = async() => {
-        //ユーザー認証
-        await userAuth();
-        let uid = localStorage.getItem("uid");
-        const config:AxiosRequestConfig = {
-          headers:{
-            "Authorization":uid
-          }
-        }
-        const res = await axios.get('/api/listGoogleTaskLists',config);
-        const data = res.data;
-        const taskLists = data.taskLists;
-        if(Array.from(taskLists) && 0 < taskLists.length){
-            setTaskLists(taskLists);
-            setTaskList(taskLists[0]);
+
+        try{
+            let res = await ApiGetRequest(axios.get,`/api/googleTaskLists`);
+            const data = res.data;
+            const taskLists = data.taskLists;
+            if(Array.from(taskLists) && 0 < taskLists.length){
+                setTaskLists(taskLists);
+                setTaskList(taskLists[0]);
+            }
+        } catch(error:any){
+            console.error(error);            
         }
     }
 
@@ -52,20 +49,17 @@ export const Tasks = (props:Props) => {
     }
 
     const getGoogleTasks = async() => {
-        //ユーザー認証
-        await userAuth();
         if(taskList && taskList.id){
             const urlSearchParams = new URLSearchParams();
             urlSearchParams.set("taskListId",taskList.id);
-    
-            let uid = localStorage.getItem("uid");
-            const config:AxiosRequestConfig = {
-              headers:{
-                "Authorization":uid
-              }
+
+            let data;
+            try{
+                let res = await ApiGetRequest(axios.get,`/api/googleTasks?${urlSearchParams}`);
+                data = res.data;
+            } catch(error:any){
+                console.error(error);
             }
-            const res = await axios.get(`/api/getGoogleTasks?${urlSearchParams}`,config);
-            const data = res.data;
     
             setTasks(data.tasks)
             if(!data.nextPageToken){
@@ -80,8 +74,6 @@ export const Tasks = (props:Props) => {
      * Googleタスク一覧を取得する
      */
     const getNextGoogleTasks = useCallback(async() => {
-        //ユーザー認証
-        await userAuth();
         if(taskList && taskList.id){
             const nextPageToken = nextPageTokenRef.current;
 
@@ -91,14 +83,13 @@ export const Tasks = (props:Props) => {
             }
             urlSearchParams.set("taskListId",taskList.id);
 
-            let uid = localStorage.getItem("uid");
-            const config:AxiosRequestConfig = {
-              headers:{
-                "Authorization":uid
-              }
+            let data;
+            try{
+                let res = await ApiGetRequest(axios.get,`/api/googleTasks?${urlSearchParams}`);
+                data = res.data;
+            } catch(error:any){
+                console.error(error);
             }
-            const res = await axios.get(`/api/getGoogleTasks?${urlSearchParams}`,config);
-            const data = res.data;
     
             setTasks([...tasks,...data.tasks])
             if(!data.nextPageToken){

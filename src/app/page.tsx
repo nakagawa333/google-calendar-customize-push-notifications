@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import FcmNotification from './components/FcmNotification';
 import { Events } from './components/events';
+import { Tasks } from './components/tasks';
 
 
 export default function Home() {
@@ -65,7 +66,15 @@ export default function Home() {
           </button>
         </div>
       </div>
-      <Events />
+      {
+          selectType === 0 ? (
+            <Events />
+          ) : selectType === 1 ? (
+            <Tasks />
+          ) : (
+            <></>
+          )
+        }
       
       <FcmNotification />
     </div>

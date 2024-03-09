@@ -19,7 +19,7 @@ export async function middleware(request:NextRequest){
         return NextResponse.next();
     }
 
-    let uid = request.headers.get("Authorization");;
+    let uid = request.headers.get("Authorization");
     if(!uid){
         return Response.json(
             { success: false, message: 'uidが存在しません' },
