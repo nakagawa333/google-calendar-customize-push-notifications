@@ -45,15 +45,6 @@ export async function PATCH(request: NextRequest){
         return response;
     }
 
-    //コレクションにデバイストークンが存在しない場合
-    if(!isExsits){
-        let response = NextResponse.json(
-            {"message":"コレクションが存在しません"},
-            {"status":400}
-        );
-        return response; 
-    }
-
 
     let isExsitsDocument;
 
