@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import ServiceWorkerRegist from './common/client/serviceWorkerRegist'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,6 +24,7 @@ export default function RootLayout({
         <div>
           {children}
         </div>
+        <ServiceWorkerRegist />
       </body>
     </html>
   )

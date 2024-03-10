@@ -11,7 +11,6 @@ export const ApiRequest = async(apiCall:reqFunction,path:string,data:any) => {
     //uidを共通リクエストとする
     let uid = localStorage.getItem("uid");
     let config:AxiosRequestConfig = createAuthAxiosRequestConfig(uid);
-    console.info(config);
     let res;
 
     try{
@@ -33,7 +32,6 @@ export const ApiGetRequest = async(apiCall:reqFunction,path:string) => {
     //uidを共通リクエストとする
     let uid = localStorage.getItem("uid");
     let config:AxiosRequestConfig = createAuthAxiosRequestConfig(uid);
-    console.info(config);
     let res;
 
     try{

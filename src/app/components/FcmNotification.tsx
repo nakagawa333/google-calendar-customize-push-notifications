@@ -79,29 +79,6 @@ function FcmNotification(){
     })()
   },[])
 
-  //メッセージ受信時
-  // onMessageListener(messaging)
-  // .then(async(payload:any) => {
-  //   //通知を作成
-  //   let notification = new Notification(
-  //     payload.notification.title,
-  //     {
-  //       body:payload.notification.body,
-  //       tag:"",
-  //       data:payload.data
-  //     }
-  //   );
-
-  //   await showNotification(notification);
-
-  //   setMessagePayload({
-  //     messageId:payload.messageId,
-  //     title:payload.notification.title,
-  //     body:payload.notification.body,
-  //     data:payload.data
-  //   });
-  // })
-
   return(
     <div></div>
   )

@@ -44,7 +44,6 @@ export const Events = (props:Props) => {
             return setIsActiveObserver(false);
         }
 
-        console.info(data);
         nextPageTokenRef.current = data.nextPageToken;
     },[events]);
 
