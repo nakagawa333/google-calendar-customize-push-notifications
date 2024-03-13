@@ -34,37 +34,39 @@ export default function Home() {
     <div className="container m-auto">
 
       <div className="flex flex-wrap mt-3">
-        <div className="flex items-center me-4">
-          <input
-            checked={selectType === 0 ? true : false}
-            id="red-radio"
-            type="radio" value=""
-            name="colored-radio"
-            className="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            onChange={() => selectTypeChange(0)}
-            />
-          <label className="ms-2 text-sm font-medium text-black-900 dark:text-black-300">イベント</label>
-        </div>
-        <div className="flex items-center me-4">
-          <input
-            checked={selectType === 1 ? true : false}
-            id="red-radio"
-            type="radio"
-            value=""
-            name="colored-radio"
-            className="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            onChange={() => selectTypeChange(1)}
-            />
-          <label className="ms-2 text-sm font-medium text-black-900 dark:text-black-300">タスク</label>
-        </div>
-        <div>
-          <button 
-            type="button" 
-            className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-            onClick={() => schedulerClick()}
-            >
-              スケジュール変更
-          </button>
+        <div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2 p-4">
+          <div className="flex items-center me-4">
+            <input
+              checked={selectType === 0 ? true : false}
+              id="event-radio"
+              type="radio" value=""
+              name="event-radio"
+              className="w-4 h-4"
+              onChange={() => selectTypeChange(0)}
+              />
+            <label htmlFor="event-radio" className="ms-2 text-sm font-medium text-black-900 dark:text-black-300">イベント</label>
+          </div>
+          <div className="flex items-center me-4">
+            <input
+              checked={selectType === 1 ? true : false}
+              id="task-radio"
+              type="radio"
+              value="task-radio"
+              name="colored-radio"
+              className="w-4 h-4"
+              onChange={() => selectTypeChange(1)}
+              />
+            <label className="ms-2 text-sm font-medium text-black-900 dark:text-black-300">タスク</label>
+          </div>
+          <div className="ml-auto">
+            <button 
+              type="button" 
+              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+              onClick={() => schedulerClick()}
+              >
+                スケジュール変更
+            </button>
+          </div>
         </div>
       </div>
       {
