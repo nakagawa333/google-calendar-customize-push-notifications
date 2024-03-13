@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { v4 as uuidv4 } from 'uuid';
+import { useMatchMedia } from "../common/useMatchMedia";
 
 type Props = {
     event:GoogleEvent | undefined
@@ -12,6 +13,7 @@ const uuid:string = uuidv4();
 export const EventModal = (props:Props) => {
     const tabIndex:number = -1;
 
+    const isMobileSize:boolean = useMatchMedia("(max-width: 599px)");
     const isClick = useRef<boolean>(false);
     useEffect(() => {
         const bodyElement = document.getElementsByTagName("body")[0];
@@ -37,9 +39,15 @@ export const EventModal = (props:Props) => {
                tabIndex={tabIndex}
                style={{ background:  "rgba(200,200,200,.5)" }}  
             >
-                <div className="relative flex flex-col p-5 rounded-lg shadow bg-white w-8/12">
+                <div 
+                  className="relative flex flex-col p-5 rounded-lg shadow bg-white w-8/12"
+                  style={{
+                    width: isMobileSize ? "95%" : "50%",
+                  }}
+                  >
                     <div className="flex">
                         <div className="ml-3">
+                            <div>
                             <h2 className="font-semibold text-gray-800">タスク詳細変更</h2>
                             <button 
                              type="button" 
@@ -81,7 +89,8 @@ export const EventModal = (props:Props) => {
                             </p>
                             <p className="mt-2 text-sm text-gray-600 leading-relaxed">
                                 {props.event?.endDate}
-                            </p>                         
+                            </p>
+                            </div>                      
                         </div>
                         </div>
 
@@ -96,8 +105,8 @@ export const EventModal = (props:Props) => {
                             <button className="px-4 py-2 ml-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-md">
                                 保存
                             </button>
+                        </div>
                     </div>
-                </div>
             </div>
         ) : (
             <></>

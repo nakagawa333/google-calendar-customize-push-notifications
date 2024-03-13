@@ -1,6 +1,7 @@
 import { propagateServerField } from "next/dist/server/lib/render-server";
 import { Dispatch, useEffect, useReducer, useRef } from "react"
 import { v4 as uuidv4 } from 'uuid';
+import { useMatchMedia } from "../common/useMatchMedia";
 
 type Props = {
     task:GoogleTask | undefined
@@ -12,6 +13,8 @@ type Props = {
 const uuid:string = uuidv4();
 export const TaskModal = (props:Props) => {
     const tabIndex:number = -1;
+
+    const isMobileSize:boolean = useMatchMedia("(max-width: 599px)");
     const isClick = useRef<boolean>(false);
 
     useEffect(() => {
@@ -37,7 +40,12 @@ export const TaskModal = (props:Props) => {
                tabIndex={tabIndex}
                style={{ background:  "rgba(200,200,200,.5)" }}   
             >
-                <div className="relative flex flex-col p-5 rounded-lg shadow bg-white w-8/12">
+                <div 
+                   className="relative flex flex-col p-5 rounded-lg shadow bg-white w-8/12"
+                   style={{
+                    width: isMobileSize ? "95%" : "50%",
+                  }}                  
+                >
                     <div className="flex">
                         <div className="ml-3">
                             <h2 className="font-semibold text-gray-800">タスク詳細変更</h2>
