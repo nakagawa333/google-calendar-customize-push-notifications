@@ -6,6 +6,7 @@ import axios from 'axios';
 import { validateAccessToken } from '@/app/common/server/validateAccessToken';
 import { authenticateAnonymousUser } from '@/app/common/server/authenticateAnonymousUser';
 import { deleteAnonymousUserUid } from '@/app/common/server/deleteAnonymousUserUid';
+import { formatTimestampToYYYYMMDDHHMMSS } from '@/app/utils/date';
 
 const SCOPES:string = 'https://www.googleapis.com/auth/calendar';
 const GOOGLE_PRIVATE_KEY:string = process.env.NEXT_PUBLIC_PRIVATE_KEY? process.env.NEXT_PUBLIC_PRIVATE_KEY.replace(/\\n/g, '\n') :"";
@@ -73,6 +74,14 @@ export async function GET(request: NextRequest){
 
             if(event.end?.dateTime){
                 endDate = event.end?.dateTime
+            }
+
+            if(startDate){
+                startDate = formatTimestampToYYYYMMDDHHMMSS(startDate);
+            }
+
+            if(endDate){
+                endDate = formatTimestampToYYYYMMDDHHMMSS(endDate);
             }
 
             eventItems.push({
