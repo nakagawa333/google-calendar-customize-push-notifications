@@ -167,9 +167,17 @@ export const SchedulerModal = (props:Props) => {
                id={uuid} 
                className="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center flex"
                tabIndex={tabIndex}
-               style={{ background:  "rgba(200,200,200,.5)" }}  
+               style={{ 
+                    background: "rgba(200,200,200)", 
+                }}  
             >
-                <div className="relative flex flex-col p-5 rounded-lg shadow bg-white w-8/12">
+                <div 
+                  className="relative flex flex-col p-5 rounded-lg shadow bg-white w-8/12"
+                  style={{
+                    maxHeight: isMobileSize ? "80%" : "90%",
+                    width: isMobileSize ? "95%" : "50%"
+                  }}
+                  >
                     <div className="flex">
                         <div className="ml-3">
                             <h2 className="font-semibold text-gray-800">スケジュール変更</h2>
@@ -186,6 +194,12 @@ export const SchedulerModal = (props:Props) => {
                              </button>
                         </div>
                     </div>
+
+                    <div
+                      style={{
+                        overflowY:"scroll",
+                      }}
+                    >
                     <div className="mt-5">
                         <div className={`ml-3 ${isMobileSize === false ? "flex" : ""}`}>
                             <div className="">
@@ -284,7 +298,6 @@ export const SchedulerModal = (props:Props) => {
                                 </select>
                             </div>
                         </div>
-
                     </div>
 
                     <div className="flex mt-5">
@@ -315,6 +328,7 @@ export const SchedulerModal = (props:Props) => {
                                 }
                             </div>
                         </div>
+                    </div>
                     </div>
                     <div className="flex justify-end items-center mt-3">
                             <button 
