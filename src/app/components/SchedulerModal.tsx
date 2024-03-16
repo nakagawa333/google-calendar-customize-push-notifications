@@ -6,6 +6,7 @@ import { useMatchMedia } from "../common/useMatchMedia";
 import { ApiGetRequest, ApiRequest } from "../utils/apiRequest";
 import { Snackbar } from "./snackbar/Snackbar";
 import { Loading } from "./Loading";
+import { Queue } from "../common/queue";
 
 type Props = {
     isOpen:boolean
@@ -14,6 +15,8 @@ type Props = {
 }
 
 const uuid:string = uuidv4();
+let queue = new Queue();
+
 export const SchedulerModal = (props:Props) => {
     const [loadingIsOpen,setLoadingIsOpen] = useState<boolean>(false);
     const isMobileSize = useMatchMedia("(width < 600px)");
@@ -120,17 +123,27 @@ export const SchedulerModal = (props:Props) => {
         }
     }
 
+    const changeScheduleClick = async() => {
+        let reqBody = {
+            schedule:schedule
+        };
+
+        let head = queue.head;
+        queue.enqueue(ApiRequest(axios.patch,"/api/cloudScheduler",reqBody));
+        if(head === null){
+            changeSchedule();
+        }
+    }
+
     /**
      * スケジュール変更
      */
     const changeSchedule = async() => {
-        setLoadingIsOpen(true);
+        // setLoadingIsOpen(true);
         try{
-            let reqBody = {
-                schedule:schedule
-            };
 
-            const res = await ApiRequest(axios.patch,"/api/cloudScheduler",reqBody);
+            let res = await queue.head?.request;
+            queue.dequeue();
             const data = res.data;
 
             let parsers = data.parsers;
@@ -147,6 +160,10 @@ export const SchedulerModal = (props:Props) => {
         }
 
         setLoadingIsOpen(false);
+
+        if(queue.head !== null){
+            changeSchedule();
+        }
     }
 
     const changeCron = async(key:string,value:string) => {
@@ -346,7 +363,7 @@ export const SchedulerModal = (props:Props) => {
 
                             <button 
                               className="px-4 py-2 ml-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-md"
-                              onClick={() => changeSchedule()}
+                              onClick={() => changeScheduleClick()}
                               >
                                 変更
                             </button>
