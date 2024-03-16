@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { SucessSnackbar } from "./snackbar/SucessSnackbar";
 import { useMatchMedia } from "../common/useMatchMedia";
 import { ApiGetRequest, ApiRequest } from "../utils/apiRequest";
+import { Snackbar } from "./snackbar/Snackbar";
+import { Loading } from "./Loading";
 
 type Props = {
     isOpen:boolean
@@ -13,6 +15,7 @@ type Props = {
 
 const uuid:string = uuidv4();
 export const SchedulerModal = (props:Props) => {
+    const [loadingIsOpen,setLoadingIsOpen] = useState<boolean>(false);
     const isMobileSize = useMatchMedia("(width < 600px)");
     const tabIndex:number = -1;
     
@@ -58,12 +61,12 @@ export const SchedulerModal = (props:Props) => {
     });
     const [parsers,setParsers] = useState<string[]>([]);
 
-    const [isSucessSnackbarOpen,setIsSucessSnackbarOpen] = useState<boolean>(false);
-
     const isClick = useRef<boolean>(false);
     const [sucessSnackbar,setSucessSnackbar] = useState<any>();
     const [snackbars,setSnackbars] = useState<any[]>([]);
     const [isSnackbarOpens,setIsSnackbarOpens] = useState<boolean[]>([]);
+
+    const changeScheduleTasks = [];
     
     useEffect(() => {
         if(props.isOpen){
@@ -84,7 +87,7 @@ export const SchedulerModal = (props:Props) => {
             })
             isClick.current = true;
         }
-    }        
+    }
 
     /**
      * クラウドスケジュールを取得する
@@ -113,7 +116,7 @@ export const SchedulerModal = (props:Props) => {
 
         } catch(error:any){
             console.error(error);
-            throw new Error(error.message);
+            console.error(error.message);
         }
     }
 
@@ -121,6 +124,7 @@ export const SchedulerModal = (props:Props) => {
      * スケジュール変更
      */
     const changeSchedule = async() => {
+        setLoadingIsOpen(true);
         try{
             let reqBody = {
                 schedule:schedule
@@ -134,13 +138,15 @@ export const SchedulerModal = (props:Props) => {
                 setParsers(parsers);
             }
 
-            setSnackbars([...snackbars,{time:5000,msg:"成功しました",id:uuidv4()}]);
+            setSnackbars([...snackbars,{time:5000,msg:"スケジュール変更に成功しました",id:uuidv4(),snackbarType:"success"}]);
             setIsSnackbarOpens([...isSnackbarOpens,true])
-            setIsSucessSnackbarOpen(true);
         } catch(error:any){
+            setSnackbars([...snackbars,{time:5000,msg:"スケジュール変更に失敗しました",id:uuidv4(),snackbarType:"error"}]);
+            setIsSnackbarOpens([...isSnackbarOpens,true])
             console.error(error);
-            throw new Error(error.message);
         }
+
+        setLoadingIsOpen(false);
     }
 
     const changeCron = async(key:string,value:string) => {
@@ -349,18 +355,27 @@ export const SchedulerModal = (props:Props) => {
                     {
                         snackbars.map((snackbar:any,index:number) => {
                             return(
-                                <SucessSnackbar
+                                <Snackbar
                                 key={index}
                                 id={snackbar.id}
                                 time={snackbar.time}
-                                msg={"成功しました"}
+                                msg={snackbar.msg}
                                 isOpen={isSnackbarOpens[index]}
                                 snackbars={snackbars}
                                 setSnackbars={setSnackbars}
                                 index={index}
+                                snackbarType={snackbar.snackbarType}
                               />
                             )
                         })
+                    }
+
+                    {
+                        loadingIsOpen === true ? (
+                            <Loading isOpen={loadingIsOpen} />
+                        ) : (
+                            <></>
+                        )                           
                     }
                 </div>
             </div>
