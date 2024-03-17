@@ -151,7 +151,7 @@ export const SchedulerModal = (props:Props) => {
                 setParsers(parsers);
             }
 
-            setSnackbars([...snackbars,{time:500000,msg:"スケジュール変更に成功しました",id:uuidv4(),snackbarType:"success"}]);
+            setSnackbars([...snackbars,{time:5000,msg:"スケジュール変更に成功しました",id:uuidv4(),snackbarType:"success"}]);
             setIsSnackbarOpens([...isSnackbarOpens,true]);
             setLoadingIsOpen(false);
 
