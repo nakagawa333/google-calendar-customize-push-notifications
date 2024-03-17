@@ -139,7 +139,7 @@ export const SchedulerModal = (props:Props) => {
      * スケジュール変更
      */
     const changeSchedule = async() => {
-        // setLoadingIsOpen(true);
+        setLoadingIsOpen(true);
         try{
 
             let res = await queue.head?.request;
