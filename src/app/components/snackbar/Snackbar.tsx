@@ -1,3 +1,4 @@
+import { useMatchMedia } from "@/app/common/useMatchMedia"
 import { useEffect } from "react"
 
 type Props = {
@@ -12,16 +13,17 @@ type Props = {
 }
 
 export const Snackbar = (props:Props) => {
-    const topRem:number = 2 + props.index * 4;
+    const isMobileSize:boolean = useMatchMedia("(width < 600px)");
+    const topRem:number = isMobileSize ? props.index * 10 + 6 : 2 + props.index * 4;
     useEffect(() => {
         let timeoutID:any;
-        if(props.isOpen){
-            //指定時間以降に削除
-            timeoutID = setTimeout(() => {
-                onChange();
-            },props.time);
-        }
-
+            if(props.isOpen){
+                //指定時間以降に削除
+                timeoutID = setTimeout(() => {
+                    onChange();
+                },props.time);
+            }
+            
         return () => clearTimeout(timeoutID);
     },[props.snackbars])
 
@@ -35,8 +37,11 @@ export const Snackbar = (props:Props) => {
     return(
         props.isOpen ? (
             <div 
-                className={`fixed top-8 left-1/2 mb-4 mr-4 p-4 text-white rounded shadow-l ${props.snackbarType === 'success' ? 'bg-lime-300' : 'bg-red-600'}`}
-                style={{transform: "translate(-50%, -50%)",top:`${topRem}rem`}}>
+                className={`fixed top-8 left-1/2 mb-4 mr-4 p-4 text-white rounded shadow-l ${props.snackbarType === 'success' ? 'bg-lime-300' : 'bg-red-600'} ${isMobileSize ? 'w-4/5' : 'w-auto'}`}
+                style={{
+                    transform: "translate(-50%, -50%)",
+                    top: isMobileSize ? `${topRem}%` : `${topRem}rem`
+                }}>
                 <div className="flex items-center">
                     <div className="mr-2">
                         {
@@ -54,8 +59,10 @@ export const Snackbar = (props:Props) => {
                     <div className="mr-10">
                         {props.msg}
                     </div>
-                    <div onClick={() => onChange()}>
-
+                    <div 
+                      className="ml-auto"
+                      onClick={() => onChange()}
+                    >
                         <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18 18 6m0 12L6 6"/>
                         </svg>  
