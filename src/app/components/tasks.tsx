@@ -120,8 +120,9 @@ export const Tasks = (props:Props) => {
             <div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2 p-4">
                 <div className="p-2 sm:w-1/2 w-full">
                     <select 
-                        id="countries" 
-                        className="bg-gray-50 border border-gray-n300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        id="countries"
+                        style={{ border:"solid"}}
+                        className="py-3 px-4 pe-16 block w-full border-red-500 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:focus:ring-gray-600"
                         onChange={(e:any) => selectTaskLists(e)}                                                                                                                                                                                                                      
                     >
                         {
