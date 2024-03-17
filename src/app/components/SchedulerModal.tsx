@@ -151,18 +151,19 @@ export const SchedulerModal = (props:Props) => {
                 setParsers(parsers);
             }
 
-            setSnackbars([...snackbars,{time:5000,msg:"スケジュール変更に成功しました",id:uuidv4(),snackbarType:"success"}]);
-            setIsSnackbarOpens([...isSnackbarOpens,true])
+            setSnackbars([...snackbars,{time:500000,msg:"スケジュール変更に成功しました",id:uuidv4(),snackbarType:"success"}]);
+            setIsSnackbarOpens([...isSnackbarOpens,true]);
+            setLoadingIsOpen(false);
+
+            if(queue.head !== null){
+                changeSchedule();
+            }
         } catch(error:any){
             setSnackbars([...snackbars,{time:5000,msg:"スケジュール変更に失敗しました",id:uuidv4(),snackbarType:"error"}]);
             setIsSnackbarOpens([...isSnackbarOpens,true])
             console.error(error);
-        }
-
-        setLoadingIsOpen(false);
-
-        if(queue.head !== null){
-            changeSchedule();
+            queue.dequeue();
+            setLoadingIsOpen(false);
         }
     }
 
