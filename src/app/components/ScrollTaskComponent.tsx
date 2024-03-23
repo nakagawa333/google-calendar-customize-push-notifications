@@ -3,28 +3,33 @@ import { useEffect, useRef } from "react";
 type Props = {
     onIntersect:any
     isActiveObserver:any
+    isSelected:any
 }
 
 export const ScrollComponent = (props:Props) => {
-    const { onIntersect,isActiveObserver } = props;
+    const { onIntersect,isActiveObserver,isSelected } = props;
     const ref = useRef(null);
   
     useEffect(() => {
       const observer = new IntersectionObserver(
         (entries, observer) => {
-          if (1 <= entries[0].intersectionRatio) {
-            observer.disconnect();
-            onIntersect();
+        if(0.99 <= entries[0].intersectionRatio && isSelected.current === false) {
+            onIntersect()
           }
         },
         {
-          threshold: 1,
+          threshold: 0.99,
         }
       );
-  
+
       if(ref.current){
-          observer.observe(ref.current);
+        observer.observe(ref.current);
       }
+
+      return () => {
+        observer.disconnect();
+      }
+ 
     }, [isActiveObserver,onIntersect]);
   
     return (

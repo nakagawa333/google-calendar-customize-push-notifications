@@ -18,15 +18,14 @@ export const Tasks = (props:Props) => {
     const nextPageTokenRef = useRef<string | null>(null);
     const [task,setTask] = useState<GoogleTask>();
     const [taskList,setTaskList] = useState<TaskListsItem>();
-
-    const [isLoad,setIsLoad] = useState<boolean>(false);
-    const isFirstRef = useRef<boolean>(true);
+    const isSelected = useRef<boolean>(false);
 
     useEffect(() => {
         getTaskLists();
     },[])
 
     useEffect(() => {
+        isSelected.current = true;
         getGoogleTasks();
     },[taskList])
 
@@ -80,6 +79,7 @@ export const Tasks = (props:Props) => {
                 return setIsActiveObserver(false);
             }
             nextPageTokenRef.current = data.nextPageToken;
+            isSelected.current = false;
         }
     }
 
@@ -140,6 +140,7 @@ export const Tasks = (props:Props) => {
             <ScrollComponent
                 onIntersect={getGoogleTasks}
                 isActiveObserver={isActiveObserver}
+                isSelected={isSelected}
             />
 
             <TaskModal
