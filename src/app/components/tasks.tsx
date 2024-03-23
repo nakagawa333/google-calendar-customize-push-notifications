@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollObserver } from "./ScrollObserver";
 import { TaskModal } from "./TaskModal";
 import { ApiGetRequest } from "../utils/apiRequest";
+import { ScrollComponent } from "./ScrollTaskComponent";
 
 type Props = {
 
@@ -18,14 +19,16 @@ export const Tasks = (props:Props) => {
     const [task,setTask] = useState<GoogleTask>();
     const [taskList,setTaskList] = useState<TaskListsItem>();
 
+    const [isLoad,setIsLoad] = useState<boolean>(false);
+    const isFirstRef = useRef<boolean>(true);
+
     useEffect(() => {
-        getTaskLists(); 
+        getTaskLists();
     },[])
 
     useEffect(() => {
         getGoogleTasks();
     },[taskList])
-
 
     const getTaskLists = async() => {
 
@@ -46,35 +49,16 @@ export const Tasks = (props:Props) => {
         let selectIndex = e.target.selectedIndex;
         let task = JSON.parse(JSON.stringify(taskLists[selectIndex]));
         setTaskList(task);
-    }
-
-    const getGoogleTasks = async() => {
-        if(taskList && taskList.id){
-            const urlSearchParams = new URLSearchParams();
-            urlSearchParams.set("taskListId",taskList.id);
-
-            let data;
-            try{
-                let res = await ApiGetRequest(axios.get,`/api/googleTasks?${urlSearchParams}`);
-                data = res.data;
-            } catch(error:any){
-                console.error(error);
-            }
-    
-            setTasks(data.tasks)
-            if(!data.nextPageToken){
-                return setIsActiveObserver(false);
-            }
-    
-            nextPageTokenRef.current = data.nextPageToken;
-        }
+        setTasks(() => []);
+        nextPageTokenRef.current = null;
     }
 
     /**
      * Googleタスク一覧を取得する
      */
-    const getNextGoogleTasks = useCallback(async() => {
+    const getGoogleTasks = async() => {
         if(taskList && taskList.id){
+            setIsActiveObserver(true);
             const nextPageToken = nextPageTokenRef.current;
 
             const urlSearchParams = new URLSearchParams();
@@ -83,7 +67,7 @@ export const Tasks = (props:Props) => {
             }
             urlSearchParams.set("taskListId",taskList.id);
 
-            let data;
+            let data:any;
             try{
                 let res = await ApiGetRequest(axios.get,`/api/googleTasks?${urlSearchParams}`);
                 data = res.data;
@@ -91,14 +75,13 @@ export const Tasks = (props:Props) => {
                 console.error(error);
             }
     
-            setTasks([...tasks,...data.tasks])
+            setTasks(() => [...tasks,...data.tasks])
             if(!data.nextPageToken){
                 return setIsActiveObserver(false);
             }
-    
             nextPageTokenRef.current = data.nextPageToken;
         }
-    },[tasks,taskList]);
+    }
 
     const taskClick = (task:GoogleTask) => {
         setTask(task);
@@ -154,8 +137,8 @@ export const Tasks = (props:Props) => {
                 }
             </div>
 
-            <ScrollObserver
-                onIntersect={getNextGoogleTasks}
+            <ScrollComponent
+                onIntersect={getGoogleTasks}
                 isActiveObserver={isActiveObserver}
             />
 
