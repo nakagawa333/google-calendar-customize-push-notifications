@@ -18,10 +18,16 @@ export const Tasks = (props:Props) => {
     const nextPageTokenRef = useRef<string | null>(null);
     const [task,setTask] = useState<GoogleTask>();
     const [taskList,setTaskList] = useState<TaskListsItem>();
+    const [isSelectDisbled,setIsSelectDisbled] = useState<boolean>(true);
     const isSelected = useRef<boolean>(false);
+    const [isVissible,setIsVissible] = useState<boolean>(false);
 
     useEffect(() => {
         getTaskLists();
+
+        window.addEventListener("scroll",toTopButtonToggle)
+
+        return () => window.removeEventListener("scroll",toTopButtonToggle)
     },[])
 
     useEffect(() => {
@@ -45,6 +51,7 @@ export const Tasks = (props:Props) => {
     }
 
     const selectTaskLists = (e:any) => {
+        setIsSelectDisbled(true);
         let selectIndex = e.target.selectedIndex;
         let task = JSON.parse(JSON.stringify(taskLists[selectIndex]));
         setTaskList(task);
@@ -74,13 +81,27 @@ export const Tasks = (props:Props) => {
                 console.error(error);
             }
     
-            setTasks(() => [...tasks,...data.tasks])
             if(!data.nextPageToken){
-                return setIsActiveObserver(false);
+                setIsActiveObserver(false);
+            } else {
+                nextPageTokenRef.current = data.nextPageToken;
+                isSelected.current = false;
             }
-            nextPageTokenRef.current = data.nextPageToken;
-            isSelected.current = false;
+
+            setTasks(() => [...tasks,...data.tasks])
+            setIsSelectDisbled(false);
         }
+    }
+
+    const toTopButtonToggle = () => {
+        500 < window.scrollY ? setIsVissible(true) : setIsVissible(false);
+    }
+
+    const toTopButtonClick = () => {
+        window.scroll({
+            top:0,
+            behavior:"smooth"
+        })
     }
 
     const taskClick = (task:GoogleTask) => {
@@ -95,30 +116,44 @@ export const Tasks = (props:Props) => {
 
     const closeTaskModal = () => {
         setIsOpen(false);
-    }
+    } 
 
     return(
         <div className="mt-3">
+            {
+                isVissible ? (  
+                    <div className="fixed right-5 rounded-full w-10 h-10 bg-gray-400 bottom-10">
+                        <div 
+                        className="bottom-1 m-auto mt-2.5 h-0 w-0 border-x-8 border-x-transparent border-b-[16px] border-gray-100"
+                        onClick={() => toTopButtonClick()}
+                        >
 
-            <div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2 p-4">
-                <div className="p-2 sm:w-1/2 w-full">
-                    <select 
-                        id="countries"
-                        style={{ border:"solid"}}
-                        className="py-3 px-4 pe-16 block w-full border-red-500 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:focus:ring-gray-600"
-                        onChange={(e:any) => selectTaskLists(e)}                                                                                                                                                                                                                      
-                    >
-                        {
-                            taskLists.map((taskList:TaskListsItem,index:number) => {
-                                return(
-                                    <option key={index}>{taskList.title}</option>
-                                )
-                            })
-                        }
-                    </select>
+                        </div>
+                    </div>
+                ) : (
+                    <></>
+                )
+            }
+                <div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2 p-4">
+                    <div className="p-2 sm:w-1/2 w-full">
+                        <select 
+                            id="countries"
+                            disabled={isSelectDisbled}
+                            style={{ border:"solid"}}
+                            className="py-3 px-4 pe-16 block w-full border-red-500 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:focus:ring-gray-600"
+                            onChange={(e:any) => selectTaskLists(e)}                                                                                                                                                                                                                      
+                        >
+                            {
+                                taskLists.map((taskList:TaskListsItem,index:number) => {
+                                    return(
+                                        <option key={index}>{taskList.title}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2 p-4">
+                        <div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2 p-4">
                 {
                     tasks.map((task:GoogleTask,index:any) => {
                         return(
