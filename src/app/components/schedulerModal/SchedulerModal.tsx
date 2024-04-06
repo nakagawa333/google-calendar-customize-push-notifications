@@ -23,17 +23,7 @@ export const SchedulerModal = (props:Props) => {
     const [isSkeleton,setIsSkeleton] = useState<boolean>(true);
     const isMobileSize = useMatchMedia("(width < 600px)");
     const tabIndex:number = -1;
-    
-    //分
-    const mins:string[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59"];
-    //時間
-    const times:string[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23"]
-    //日
-    const days:string[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
-    //月
-    const months:string[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12"];
-    //曜日
-    const weeks:string[] = ["*","月","火","水","木","金","土","日"];
+
     const weeksMap = new Map([
         ["*","*"],
         ["月","1"],
@@ -44,16 +34,7 @@ export const SchedulerModal = (props:Props) => {
         ["土","6"],
         ["日","7"],
     ]);
-    const valWeeksMap = new Map([
-        ["*","*"],
-        ["1","月"],
-        ["2","火"],
-        ["3","水"],
-        ["4","木"],
-        ["5","金"],
-        ["6","土"],
-        ["7","日"],
-    ]);
+
     //スケジュール
     const [schedule,setSchedule] = useState<string>("");
     //スケジュール cron値
@@ -71,8 +52,6 @@ export const SchedulerModal = (props:Props) => {
     const [snackbars,setSnackbars] = useState<any[]>([]);
     const [isSnackbarOpens,setIsSnackbarOpens] = useState<boolean[]>([]);
 
-    const changeScheduleTasks = [];
-    
     useEffect(() => {
         if(props.isOpen){
             setSnackbars([]);
@@ -230,7 +209,7 @@ export const SchedulerModal = (props:Props) => {
                     >
                         {
                             isSkeleton ? (
-                                <div role="status" className="max-w-sm animate-pulse">
+                                <div role="status"className ="max-w-sm animate-pulse">
                                     <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
                                     <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
                                     <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
