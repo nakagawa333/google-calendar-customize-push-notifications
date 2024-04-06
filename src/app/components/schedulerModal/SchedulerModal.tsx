@@ -1,12 +1,13 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { SucessSnackbar } from "./snackbar/SucessSnackbar";
-import { useMatchMedia } from "../common/useMatchMedia";
-import { ApiGetRequest, ApiRequest } from "../utils/apiRequest";
-import { Snackbar } from "./snackbar/Snackbar";
-import { Loading } from "./Loading";
-import { Queue } from "../common/queue";
+import { SucessSnackbar } from "../snackbar/SucessSnackbar";
+import { useMatchMedia } from "../../common/useMatchMedia";
+import { ApiGetRequest, ApiRequest } from "../../utils/apiRequest";
+import { Snackbar } from "../snackbar/Snackbar";
+import { Loading } from "../Loading";
+import { Queue } from "../../common/queue";
+import { SchedulerModalContent } from "./SchedulerModalContent";
 
 type Props = {
     isOpen:boolean
@@ -19,17 +20,18 @@ let queue = new Queue();
 
 export const SchedulerModal = (props:Props) => {
     const [loadingIsOpen,setLoadingIsOpen] = useState<boolean>(false);
+    const [isSkeleton,setIsSkeleton] = useState<boolean>(true);
     const isMobileSize = useMatchMedia("(width < 600px)");
     const tabIndex:number = -1;
     
     //分
-    const mins:any[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59"];
+    const mins:string[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59"];
     //時間
-    const times:any[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23"]
+    const times:string[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23"]
     //日
-    const days:any[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+    const days:string[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
     //月
-    const months:any[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12"];
+    const months:string[] = ["*","0","1","2","3","4","5","6","7","8","9","10","11","12"];
     //曜日
     const weeks:string[] = ["*","月","火","水","木","金","土","日"];
     const weeksMap = new Map([
@@ -109,13 +111,15 @@ export const SchedulerModal = (props:Props) => {
                     month:dataScheduleArr[3],
                     week:dataScheduleArr[4]                
                 }
-                setSchedule(dataSchedule);
-                setCron(cron);
+                setSchedule(() => dataSchedule);
+                setCron(() =>  cron);
             }
             let parsers = data.parsers;
             if(Array.isArray(parsers) && parsers.length !== 0){
-                setParsers(parsers);
+                setParsers(() => parsers);
             }
+
+            setIsSkeleton(() => false);
 
         } catch(error:any){
             console.error(error);
@@ -224,137 +228,30 @@ export const SchedulerModal = (props:Props) => {
                         overflowY:"scroll",
                       }}
                     >
-                    <div className="mt-5">
-                        <div className={`ml-3 ${isMobileSize === false ? "flex" : ""}`}>
-                            <div className="">
-                                <label>分</label>
-                                <select 
-                                   style={{ border:"solid"}}
-                                   className="py-3 px-4 pe-16 block w-full border-red-500 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:focus:ring-gray-600"
-                                   value={cron["min"]}
-                                   onChange={(e) => changeCron("min",e.target.value)}
-                                >
-                                    {
-                                        mins.map((min:number,index:number) => {
-                                            return(
-                                                <option key={index}>
-                                                    {min}
-                                                </option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div className="">
-                                <label>時間</label>
-                                <select
-                                  style={{ border:"solid"}}
-                                  className="py-3 px-4 pe-16 block w-full border-red-500 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:focus:ring-gray-600"
-                                  value={cron["time"]}
-                                  onChange={(e) => changeCron("time",e.target.value)}
-                                >
-                                    {
-                                        times.map((time:number,index:number) => {
-                                            return(
-                                                <option key={index}>
-                                                    {time}
-                                                </option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div>
-                                <label>日</label>
-                                <select 
-                                  style={{ border:"solid"}}
-                                  className="py-3 px-4 pe-16 block w-full border-red-500 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:focus:ring-gray-600"
-                                  value={cron["day"]}
-                                  onChange={(e) => changeCron("day",e.target.value)}
-                                >
-                                    {
-                                        days.map((day:number,index:number) => {
-                                            return(
-                                                <option key={index}>
-                                                    {day}
-                                                </option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div>
-                                <label>月</label>
-                                <select 
-                                  style={{ border:"solid"}}
-                                  className="py-3 px-4 pe-16 block w-full border-red-500 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:focus:ring-gray-600"
-                                  value={cron["month"]}
-                                  onChange={(e) => changeCron("month",e.target.value)}
-                                  >
-                                    {
-                                        months.map((month:number,index:number) => {
-                                            return(
-                                                <option key={index}>
-                                                    {month}
-                                                </option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div>
-                                <label>曜日</label>
-                                <select 
-                                   style={{ border:"solid"}}
-                                   className="py-3 px-4 pe-16 block w-full border-red-500 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:focus:ring-gray-600"
-                                   value={valWeeksMap.get(cron["week"])}
-                                   onChange={(e) => changeCron("week",e.target.value)}
-                                >
-                                    {
-                                        weeks.map((week:string,index:number) => {
-                                            return(
-                                                <option key={index}>
-                                                    {week}
-                                                </option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                        {
+                            isSkeleton ? (
+                                <div role="status" className="max-w-sm animate-pulse">
+                                    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+                                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
+                                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+                                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
+                                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+                                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
+                                    <span className="sr-only">Loading...</span>
+                                </div>
+                            ) : (
+                                <SchedulerModalContent 
+                                  isMobileSize={isMobileSize}
+                                  cron={cron}
+                                  changeCron={changeCron}
+                                  schedule={schedule}
+                                  parsers={parsers}
+                                />
+                            )
+                        }
+                       </div>
 
-                    <div className="flex mt-5">
-                        <div className="ml-3">
-                            <div>
-                                <h3 className="font-semibold text-gray-800">cron</h3>
-                            </div>
-                            <div>
-                                <input type="text" value={schedule}></input>
-                            </div> 
-                        </div>
-                    </div>
-
-                    <div className="flex mt-5">
-                        <div className="ml-3">
-                            <div>
-                                <h3 className="font-semibold text-gray-800">次のトリガー日</h3>
-                            </div>
-                            <div>
-                                {
-                                    parsers.map((parser:string,index:number) => {
-                                        return(
-                                            <p key={index}>
-                                                {parser}
-                                            </p>
-                                        )
-                                    })
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                    <div className="flex justify-end items-center mt-3">
+                       <div className="flex justify-end items-center mt-3">
                             <button 
                             className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-md"
                             onClick={props.closeTaskModal}
@@ -368,6 +265,7 @@ export const SchedulerModal = (props:Props) => {
                               >
                                 変更
                             </button>
+                        </div>
                     </div>
 
                     {
@@ -396,7 +294,6 @@ export const SchedulerModal = (props:Props) => {
                         )                           
                     }
                 </div>
-            </div>
         ) : (
             <></>
         )

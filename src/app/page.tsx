@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import FcmNotification from './components/FcmNotification';
 import { Events } from './components/events';
 import { Tasks } from './components/tasks';
-import { SchedulerModal } from './components/SchedulerModal';
+import { SchedulerModal } from './components/schedulerModal/SchedulerModal';
 
 
 export default function Home() {
